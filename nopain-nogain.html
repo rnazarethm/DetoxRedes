@@ -334,15 +334,14 @@ async function loadHomeSummary(){
     if(!el) continue;
     try{
       var snap=await getDoc(doc(db,"logs",docId(pid,today)));
-      if(snap.exists()){el.innerHTML="<b>"+calcPoints(pid)+" pts</b> · "+fmt(snap.data().total||0)+" hoje";}
-      else{el.innerHTML="<b>"+calcPoints(pid)+" pts</b> · sem registro hoje";}
+      if(snap.exists()){
+        el.innerHTML=fmt(snap.data().total||0)+" hoje";
+      } else {
+        el.innerHTML='<span style="color:var(--muted);font-style:italic">sem registro hoje</span>';
+      }
     }catch(e){el.textContent="...";}
   }
 }
-
-// Points: 1 pt para quem tiver menor total no dia (entre quem registrou)
-// Simplified for home: just show totals. Full calc in ranking.
-function calcPoints(pid){return "—";}
 
 async function loadRanking(){
   try{
