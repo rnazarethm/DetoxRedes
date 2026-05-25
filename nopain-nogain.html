@@ -173,7 +173,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 </div>
 <div class="toast" id="toast"></div><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB7cmul7CkCoWIaqk6HR_Tx1nMFCKiUtAc",
@@ -303,10 +303,13 @@ async function loadHistory(){
       var th=Math.floor((e.total||0)/60),tm=(e.total||0)%60;
       var p=e.date.split("-");var dlbl=p[2]+"/"+p[1];
       var card=document.createElement("div");card.className="hist-card";
-      var btn=document.createElement("button");btn.className="hist-edit";btn.textContent="✏️ Editar este dia";
+      var btnRow=document.createElement("div");btnRow.style.cssText="display:flex;gap:8px;";
+      var btn=document.createElement("button");btn.className="hist-edit";btn.style.flex="1";btn.textContent="✏️ Editar";
       btn.addEventListener("click",(function(entry){return function(){loadIntoForm(entry);};})(e));
+      var btnDel=document.createElement("button");btnDel.className="hist-edit";btnDel.style.cssText="flex:0 0 auto;color:var(--danger, #D94F4F);border-color:rgba(217,79,79,0.3);";btnDel.textContent="🗑️ Excluir";
+      btnDel.addEventListener("click",(function(entry){return function(){deleteLog(currentUser,entry.date);};})(e));
       card.innerHTML='<div class="hist-top"><div class="hist-date">'+dlbl+'</div><div class="hist-total">'+th+"h "+(tm<10?"0"+tm:tm)+"m"+'</div></div><div class="hist-nets">'+netLines+'</div>';
-      card.appendChild(btn);list.appendChild(card);
+      btnRow.appendChild(btn);btnRow.appendChild(btnDel);card.appendChild(btnRow);list.appendChild(card);
     });
   }catch(e){list.innerHTML='<div class="hist-empty">Erro ao carregar.</div>';console.error(e);}
 }
@@ -446,6 +449,19 @@ document.getElementById("log-date").value=new Date().toISOString().split("T")[0]
 document.getElementById("log-date").max=new Date().toISOString().split("T")[0];
 loadConfig().then(function(){loadHomeSummary();});
 
+// ── DELETE LOG
+async function deleteLog(user, date){
+  if(!confirm("Excluir registro de "+date+"?")) return;
+  try{
+    await deleteDoc(doc(db,"logs",user+"_"+date));
+    showToast("Registro excluído!");
+    loadHistory();
+  }catch(e){
+    showToast("Erro ao excluir.");
+    console.error(e);
+  }
+}
+
 // ── CONFIG
 async function loadConfig(){
   try{
@@ -495,5 +511,6 @@ window.switchTab=switchTab;
 window.saveLog=saveLog;
 window.toggleRank=toggleRank;
 window.saveConfig=saveConfig;
+window.deleteLog=deleteLog;
 window.goConfig=goConfig;
 </script></body></html>
