@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>No Pain, No Gain</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#7AB52A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="No Pain No Gain">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="manifest" href="./manifest.json">
 <style>
 :root{--lime:#7AB52A;--lime-bg:#F0F9DC;--lime-mid:#B8D94A;--bg:#F9F8F4;--white:#FFFFFF;--surface:#F0EFE9;--border:#E4E2D8;--text:#181816;--muted:#8A8880}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -219,6 +226,8 @@ function go(s){
   document.getElementById("s-"+s).classList.add("active");
   window.scrollTo(0,0);
   if(s==="select") loadConfig().then(function(){loadHomeSummary();});
+
+
   if(s==="rank") loadRanking();
 }
 
@@ -447,6 +456,8 @@ function showToast(msg){
 document.getElementById("log-date").value=new Date().toISOString().split("T")[0];
 document.getElementById("log-date").max=new Date().toISOString().split("T")[0];
 loadConfig().then(function(){loadHomeSummary();});
+
+
 
 // ── DELETE LOG
 async function deleteLog(user, date){
